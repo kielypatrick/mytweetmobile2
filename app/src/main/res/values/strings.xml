@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">MyTweet</string>
+    <string name="newTweet">Sup?</string>
+    <string name="loginEmail">joe@bloggs.com</string>
+    <string name="welcomeTitle">Welcome</string>
+    <string name="buttonSignin">Sign in</string>
+    <string name="buttonLogin">Login</string>
+    <string name="Password">****</string>
+    <string name="buttonRegister">Register</string>
+    <string name="signupTitle">Join Today!</string>
+    <string name="newsFeed">Newsfeed</string>
+    <string name="defaultAmount">00</string>
+    <string name="defaultMethod">N/A</string>
+
+
+
+
+
+
+</resources>
