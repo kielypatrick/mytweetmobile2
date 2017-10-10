@@ -11,10 +11,10 @@
     <string name="newsFeed">Newsfeed</string>
     <string name="defaultAmount">00</string>
     <string name="defaultMethod">N/A</string>
-
-
-
-
+    <string name="menuSettings">Settings</string>
+    <string name="menuNewsFeed">Newsfeed</string>
+    <string name="menuMyTweet">Tweet</string>
+    <string name="menuLogout">Logout</string>
 
 
 </resources>

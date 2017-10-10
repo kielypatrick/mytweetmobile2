@@ -3,11 +3,13 @@ package app.myTweet.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.patrick.mytweet.R;
 
+import app.myTweet.main.MyTweetApp;
 import app.myTweet.model.User;
 
 
@@ -21,6 +23,8 @@ public class Signup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        Log.v("Tweet", "Signup page");
+
 
 
     }
@@ -34,8 +38,8 @@ public class Signup extends AppCompatActivity {
 
         User user = new User (firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
 
-      //  DonationApp app = (DonationApp) getApplication();
-        //app.newUser(user);
+        MyTweetApp app = (MyTweetApp) getApplication();
+        app.newUser(user);
         startActivity(new Intent(this, Welcome.class));
     }
 

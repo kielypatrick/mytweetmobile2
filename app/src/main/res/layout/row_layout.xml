@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -11,16 +12,19 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="48dp"
         android:layout_marginTop="20dp"
-        android:text="@string/defaultAmount" />
+        android:text="@string/defaultAmount"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+
 
     <TextView
         android:id="@+id/row_method"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/row_post"
-        android:layout_alignBottom="@+id/row_post"
-        android:layout_marginStart="106dp"
-        android:layout_toEndOf="@+id/row_post"
-        android:text="@string/defaultMethod" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/row_post"
+        android:layout_marginStart="270dp"
+        android:layout_marginTop="23dp"
+        android:text="TextView" />
 
 </RelativeLayout>
