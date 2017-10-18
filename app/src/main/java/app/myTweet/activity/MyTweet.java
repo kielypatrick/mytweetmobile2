@@ -44,21 +44,25 @@ public class MyTweet extends AppCompatActivity implements TextWatcher{
         progressBar.setMax(target);
         if (tweet.length() >140) {
             Toast.makeText(this, "TMI honey", Toast.LENGTH_SHORT).show();
-
-        }
-
+            }
 
         }
 
     public void submitButtonPressed (View view) {
 
-        app.newTweet(new Tweet(tweet));
 
+        if (tweet.length() >1) {
+            app.newTweet(new Tweet(tweet));
 
-        startActivity (new Intent(this, Newsfeed.class));
-        Log.v("Tweet", "MyTweet Started " + tweet.getText() + length.getText());
-        Toast.makeText(this, "Tweet Sent!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, Newsfeed.class));
+            Log.v("Tweet", "MyTweet Started " + tweet.getText() + length.getText());
+            Toast.makeText(this, "Tweet Sent!", Toast.LENGTH_SHORT).show();
+        }
 
+        else {
+            Toast.makeText(this, "Cat got your tongue??", Toast.LENGTH_SHORT).show();
+
+        }
 
     }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import app.myTweet.model.Portfolio;
@@ -22,6 +23,17 @@ public class MyTweetApp extends Application
     public void newTweet(Tweet tweet)
     {
             tweets.add(tweet);
+    }
+
+    public Tweet getTweet(Date date) {
+        Log.i(this.getClass().getSimpleName(), "Long parameter id: " + date);
+
+        for (Tweet tweet : tweets) {
+            if (date.equals(tweet.date)) {
+                return tweet;
+            }
+        }
+        return null;
     }
 
     public Portfolio portfolio;

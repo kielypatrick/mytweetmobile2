@@ -57,7 +57,7 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuMyTweet:
-                startActivity(new Intent(this, MyTweet.class));
+                startActivity(new Intent(this, tweetview.class));
                 break;
             case R.id.menuSettings:
                 Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
@@ -141,8 +141,13 @@ class TweetAdapter extends ArrayAdapter<Tweet> {
             postAge =((((date2.getTime() - date.getTime()) / 604800000)) + " weeks ago");
         }
 
+        if (tweet.tweet.getText().length() > 31) {
+            post.setText(tweet.tweet.getText().subSequence(0,30) + "...");
 
-        post.setText("" + tweet.tweet.getText());
+        }
+        else {
+            post.setText("" + tweet.tweet.getText());
+        }
         methodView.setText("" + postAge);
 
 

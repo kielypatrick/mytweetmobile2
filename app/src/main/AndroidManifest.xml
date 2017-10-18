@@ -31,7 +31,10 @@
             android:label="@string/app_name"></activity>
         <activity
             android:name="app.myTweet.activity.tweetview"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.myTweet.activity.Newsfeed"/>
+        </activity>
 
     </application>
 

@@ -22,16 +22,16 @@ public class Portfolio
         tweets.add(tweet);
     }
 
-    public Tweet getTweet(Date date) {
-        Log.i(this.getClass().getSimpleName(), "Long parameter id: " + date);
-
-        for (Tweet tweet : tweets) {
-            if (date.equals(tweet.date)) {
-                return tweet;
-            }
-        }
-        return null;
-    }
+//    public Tweet getTweet(Date date) {
+//        Log.i(this.getClass().getSimpleName(), "Long parameter id: " + date);
+//
+//        for (Tweet tweet : tweets) {
+//            if (date.equals(tweet.date)) {
+//                return tweet;
+//            }
+//        }
+//        return null;
+//    }
 
 
 }
