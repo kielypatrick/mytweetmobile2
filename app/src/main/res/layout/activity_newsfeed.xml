@@ -19,7 +19,8 @@
         android:layout_width="356dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/newsFeed"
-        android:layout_below="@+id/newsFeed">
+        android:layout_below="@+id/newsFeed"
+        android:layout_alignParentEnd="true">
 
     </ListView>
 

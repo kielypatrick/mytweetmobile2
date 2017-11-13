@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.patrick.mytweet.R;
 
 import app.myTweet.main.MyTweetApp;
+import app.myTweet.model.Portfolio;
 import app.myTweet.model.User;
 
 
@@ -19,10 +20,18 @@ import app.myTweet.model.User;
 
 public class Signup extends AppCompatActivity {
 
+    private Portfolio portfolio;
+    private MyTweetApp app;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        app = (MyTweetApp) getApplication();
+
+        portfolio = app.portfolio;
+
         Log.v("Tweet", "Signup page");
 
 
@@ -40,8 +49,17 @@ public class Signup extends AppCompatActivity {
 
         MyTweetApp app = (MyTweetApp) getApplication();
         app.newUser(user);
+        Log.v("Tweet", "Signup " + email.getText());
+
         startActivity(new Intent(this, Welcome.class));
     }
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        portfolio.saveUser();
+        Log.v("Tweet", "User saved " );
 
+    }
 }

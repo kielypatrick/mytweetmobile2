@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.patrick.mytweet">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name="app.myTweet.main.MyTweetApp"
         android:allowBackup="true"
@@ -10,7 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="app.myTweet.activity.Welcome"></activity>
+
+        <activity android:name="app.myTweet.activity.Welcome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="app.myTweet.activity.Signup"
             android:label="@string/signupTitle"></activity>
@@ -20,11 +30,7 @@
         <activity
             android:name="app.myTweet.activity.MyTweet"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="app.myTweet.activity.Newsfeed"
@@ -32,8 +38,8 @@
         <activity
             android:name="app.myTweet.activity.tweetview"
             android:label="@string/app_name">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value="app.myTweet.activity.Newsfeed"/>
+            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value="app.myTweet.activity.Newsfeed"/>-->
         </activity>
 
     </application>

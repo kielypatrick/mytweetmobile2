@@ -16,5 +16,7 @@
     <string name="menuMyTweet">Tweet</string>
     <string name="menuLogout">Logout</string>
 
+    <string name="contact">Select Contact</string>
+    <string name="send_tweet">Send Tweet by Email</string>
 
 </resources>
