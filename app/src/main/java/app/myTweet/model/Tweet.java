@@ -14,11 +14,11 @@ import java.util.Date;
  */
 
 public class Tweet {
-
-    public String tweet;
+    public String _id;
+    public String body;
     public Long date;
-    public String contact;
-    public String author;
+  //  public String contact;
+    public String  author;
 
     //JSON names for instance fields
     private final String JSON_TWEET   = "tweet"   ;
@@ -27,9 +27,10 @@ public class Tweet {
 
     public Tweet (EditText tweet)
     {
-        this.tweet = tweet.getText().toString();
+        this.body = tweet.getText().toString();
         this.date = new Date().getTime();
-        contact = ":none presently";
+        //this.author = author._id;
+       // contact = ":none presently";
 
     }
 
@@ -37,7 +38,7 @@ public class Tweet {
     public Tweet(JSONObject json) throws JSONException
     {
 
-        tweet   = json.getString(JSON_TWEET);
+        body   = json.getString(JSON_TWEET);
         date    = json.getLong(JSON_DATE);
         author  = json.getString(JSON_AUTHOR);
 
@@ -47,7 +48,7 @@ public class Tweet {
     public JSONObject toJSON() throws JSONException
     {
         JSONObject json = new JSONObject();
-        json.put(JSON_TWEET   , tweet);
+        json.put(JSON_TWEET   , body);
         json.put(JSON_DATE          , date);
         json.put(JSON_AUTHOR    ,author);
         return json;

@@ -18,29 +18,28 @@ import android.widget.Toast;
 
 import com.example.patrick.mytweet.R;
 
+import java.util.Date;
+
 import static app.myTweet.helpers.IntentHelper.selectContact;
 import static app.myTweet.helpers.ContactHelper.getContact;
 import static app.myTweet.helpers.ContactHelper.getEmail;
 import static app.myTweet.helpers.ContactHelper.sendEmail;
 
-import android.content.Intent;
-
-
-import java.util.Date;
-import java.util.List;
 
 import app.myTweet.main.MyTweetApp;
-import app.myTweet.model.Portfolio;
 import app.myTweet.model.Tweet;
+import app.myTweet.model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnClickListener{
+public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnClickListener, Callback<Tweet> {
 
     private TextView length;
     private EditText tweetBody;
     private MyTweetApp app;
     private Tweet tweet;
-    private Portfolio portfolio;
     private int          target = 140;
     private ProgressBar progressBar;
     private static final int REQUEST_CONTACT = 1;
@@ -57,20 +56,17 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_tweet);
         tweetBody = (EditText) findViewById(R.id.newTweet);
-        tweet = new Tweet(tweetBody);
         length = (TextView) findViewById(R.id.wordCount);
         tweetBody.addTextChangedListener(this);
         app = (MyTweetApp) getApplication();
-        portfolio = app.portfolio;
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setMax(target);
         contactButton = (Button)   findViewById(R.id.contact);
         contactButton.setOnClickListener(this);
         sendTweet = (Button)   findViewById(R.id.send_tweet);
         sendTweet.setOnClickListener(this);
-
 //        Date tweetId = (Date)getIntent().getExtras().getSerializable("TWEET_ID");
-//        tweet = portfolio.getTweet(tweetId);
+//        tweet = tweetlist.getTweet(tweetId);
 
     }
 
@@ -78,7 +74,6 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
     public void onPause()
     {
         super.onPause();
-        portfolio.saveTweets();
         Log.v("Tweet", "MyTweet App Tweets saved");
 
 
@@ -91,23 +86,33 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
 
     public void submitButtonPressed (View view) {
         Editable tweetbody = tweetBody.getText();
-        Log.v("Tweet " , tweetbody.toString());
+        tweet = new Tweet(tweetBody);
+
+        Log.v("Tweet ", "MyTweet " + tweetbody.toString());
 
 
 
         if (hasLetters(tweetbody.toString()) == true) {
-            app.newTweet(new Tweet(tweetBody));
+            Log.v("MyTweet", tweetBody.getText() + " stored for " + app.currentUser);
+            Tweet tweet = new Tweet(tweetBody);
+            tweet.author = app.currentUser._id;
+
+            Call<Tweet> call = (Call<Tweet>) app.myTweetService.createTweet(tweet);
+            Log.v("MyTweet", tweet.toString() + " stored for " + tweet.author);
+
+            call.enqueue(this);
+
 
 
             startActivity(new Intent(this, Newsfeed.class));
-            Log.v("Tweet", "MyTweet Started " + tweetBody.getText() + length.getText());
+            Log.v("MyTweet", "MyTweet Newsfeed Started " + tweetBody.getText() + " " + length.getText());
             Toast.makeText(this, "Tweet Sent!", Toast.LENGTH_SHORT).show();
 
 
         }
 
         else {
-            Toast.makeText(this, "Cat got your tongue??", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Cat got your thumb??", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -200,5 +205,21 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
 
                 break;
         }
+    }
+
+    @Override
+    public void onResponse(Call<Tweet> call, Response<Tweet> response)
+    {
+        app.tweets.add(response.body());
+
+        Toast toast = Toast.makeText(this, "Tweet Accepted", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void onFailure(Call<Tweet> call, Throwable t)
+    {
+        Toast toast = Toast.makeText(this, "Error making tweet", Toast.LENGTH_LONG);
+        toast.show();
     }
 }

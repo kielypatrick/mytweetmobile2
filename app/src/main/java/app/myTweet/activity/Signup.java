@@ -6,21 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.patrick.mytweet.R;
 
 import app.myTweet.main.MyTweetApp;
-import app.myTweet.model.Portfolio;
 import app.myTweet.model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 
 /**
  * Created by Patrick on 22/09/2017.
  */
 
-public class Signup extends AppCompatActivity {
+public class Signup extends AppCompatActivity implements Callback<User> {
 
-    private Portfolio portfolio;
     private MyTweetApp app;
 
 
@@ -28,13 +31,8 @@ public class Signup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        app = (MyTweetApp) getApplication();
-
-        portfolio = app.portfolio;
 
         Log.v("Tweet", "Signup page");
-
-
 
     }
 
@@ -48,18 +46,39 @@ public class Signup extends AppCompatActivity {
         User user = new User (firstName.getText().toString(), lastName.getText().toString(), email.getText().toString(), password.getText().toString());
 
         MyTweetApp app = (MyTweetApp) getApplication();
-        app.newUser(user);
+        Call<User> call = (Call<User>) app.myTweetService.createUser(user);
+        call.enqueue(this);
+
         Log.v("Tweet", "Signup " + email.getText());
+
 
         startActivity(new Intent(this, Welcome.class));
     }
 
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        portfolio.saveUser();
-        Log.v("Tweet", "User saved " );
 
+//    @Override
+//    public void onPause()
+//    {
+//        super.onPause();
+//        userlist.saveUser();
+//        Log.v("Tweet", "User saved " );
+//
+//    }
+
+    @Override
+    public void onResponse(Call<User> call, Response<User> response)
+    {
+      //  app.users.add(response.body());
+        startActivity(new Intent(this, Welcome.class));
+    }
+
+    @Override
+    public void onFailure(Call<User> call, Throwable t)
+    {
+        app.myTweetServiceAvailable = false;
+        Toast toast = Toast.makeText(this, "Donation Service Unavailable. Try again later", Toast.LENGTH_LONG);
+        toast.show();
+        startActivity (new Intent(this, Welcome.class));
     }
 }
+

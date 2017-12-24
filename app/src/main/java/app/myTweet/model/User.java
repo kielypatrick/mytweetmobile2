@@ -12,6 +12,8 @@ import java.util.Date;
  */
 
 public class User {
+    public String _id;
+
     public String firstName;
     public String lastName;
     public String email;

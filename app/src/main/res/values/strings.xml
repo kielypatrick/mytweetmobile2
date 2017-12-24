@@ -3,7 +3,7 @@
     <string name="newTweet">Sup?</string>
     <string name="loginEmail">joe@bloggs.com</string>
     <string name="welcomeTitle">Welcome</string>
-    <string name="buttonSignin">Sign in</string>
+    <string name="buttonSignin">Sign up</string>
     <string name="buttonLogin">Login</string>
     <string name="Password">****</string>
     <string name="buttonRegister">Register</string>
@@ -18,5 +18,8 @@
 
     <string name="contact">Select Contact</string>
     <string name="send_tweet">Send Tweet by Email</string>
+
+    <string name="title_map">Map</string>
+    <string name="google_maps_key">AIzaSyAnqqv32zrAs4jF-aJJDLopZQocIV8fkP0</string>
 
 </resources>

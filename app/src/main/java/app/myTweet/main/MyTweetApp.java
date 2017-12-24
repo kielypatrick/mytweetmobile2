@@ -3,38 +3,39 @@ package app.myTweet.main;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import app.myTweet.model.Portfolio;
-import app.myTweet.model.PortfolioSerializer;
 import app.myTweet.model.Tweet;
 import app.myTweet.model.User;
-
-import static app.myTweet.helpers.LogHelpers.info;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyTweetApp extends Application
 {
+    public MyTweetService myTweetService;
+    public boolean         myTweetServiceAvailable = false;
+
+    public String          service_url  = "http://10.0.2.2:4000";   // Standard Emulator IP Address
+
 
     public List <Tweet> tweets    = new ArrayList<Tweet>();
     public List <User> users = new ArrayList<User>();
-    private static final String FILENAME = "portfolio.json";
-    public Portfolio portfolio;
 
-
-
+    public User             currentUser;
 
 
     public void newTweet(Tweet tweet)
     {
-       // tweets.add(tweet);  tHIS WAS INCLUDED BEFORE PORTFOLIO USE. THEN IT CAUSED DUPLICATE NEWSFEED ENTRIES
-        portfolio.tweets.add(tweet);
+      tweets.add(tweet);
+        Log.v("Tweet", "MyTweeeeeeeetApp " + tweet.body);
     }
 
-
-
-    public Tweet getTweet(Date date) {
+    public Tweet getTweet(Long date) {
         Log.i(this.getClass().getSimpleName(), "Long parameter id: " + date);
 
         for (Tweet tweet : tweets) {
@@ -45,39 +46,44 @@ public class MyTweetApp extends Application
         return null;
     }
 
-
-
-
     @Override
     public void onCreate()
     {
         super.onCreate();
-        PortfolioSerializer serializer = new PortfolioSerializer(this, FILENAME);
-        portfolio = new Portfolio(serializer);
-        tweets = portfolio.tweets;
 
-        Log.v("Tweet", "MyTweet App Started now" + tweets);
+        Gson gson = new GsonBuilder().create();
 
-        users = portfolio.users;
-        Log.v("Tweet", "MyTweet users" + users);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(service_url)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        myTweetService = retrofit.create(MyTweetService.class);
+
+        Log.v("TweetApp", "MyTweet App Started now" + tweets);
+
+        Log.v("TweetApp", "MyTweet users" + users);
 
     }
-
-
 
     public void newUser (User user)
     {
+
+        //users.add(user);;  tHIS WAS INCLUDED BEFORE PORTFOLIO USE
         users.add(user);
+
     }
 
 
-    public boolean validUser (String email, String password)
+    public boolean validUser (String email)
     {
         for (User user : users)
         {
-            if (user.email.equals(email) && user.password.equals(password))
+            if (user.email.equals(email))
             {
+                currentUser = user;
                 return true;
+
+
             }
         }
         return false;

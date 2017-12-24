@@ -20,28 +20,26 @@ import android.widget.Toast;
 
 import com.example.patrick.mytweet.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import app.myTweet.main.MyTweetApp;
 import app.myTweet.model.Tweet;
-import android.widget.AbsListView;
-import android.view.ActionMode;
-import static app.myTweet.helpers.IntentHelper.startActivityWithData;
+import app.myTweet.model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemClickListener, Callback<List<Tweet>>{
 
     ListView listView;
     private MyTweetApp app;
     private TweetAdapter adapter;
-
-
 
 
     @Override
@@ -50,12 +48,13 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.activity_newsfeed);
 
         app = (MyTweetApp) getApplication();
-
-
-        listView = (ListView) findViewById(R.id.reportList);
-        adapter = new TweetAdapter (this, app.tweets);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+        Call<List<Tweet>> call1 = (Call<List<Tweet>>) app.myTweetService.getAllTweets();
+        call1.enqueue(this);
+//
+//        listView = (ListView) findViewById(R.id.reportList);
+//        adapter = new TweetAdapter (this, app.tweets, app.users);
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener(this);
 
 
 
@@ -67,7 +66,7 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuMyTweet:
-                startActivity(new Intent(this, tweetview.class));
+                startActivity(new Intent(this, MyTweet.class));
                 break;
             case R.id.menuSettings:
                 Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
@@ -104,23 +103,60 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
 
 
 
+//    @Override
+//    public void onResume()
+//    {
+//        super.onResume();
+//        adapter.notifyDataSetChanged();
+//    }
+
     @Override
-    public void onResume()
-    {
-        super.onResume();
+    public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
+        serviceAvailableMessage();
+        app.tweets = response.body();
+        Log.v("Newsfeed", "Tweets" + app.tweets.toString());
+
+        listView = (ListView) findViewById(R.id.reportList);
+        adapter = new TweetAdapter(this, app.tweets, app.users);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
         adapter.notifyDataSetChanged();
+
+        app.myTweetServiceAvailable = true;
+    }
+
+    @Override
+    public void onFailure(Call<List<Tweet>> call, Throwable t) {
+        Log.v("Newsfeed", t.toString());
+        app.myTweetServiceAvailable = false;
+        serviceUnavailableMessage();
+    }
+    void serviceUnavailableMessage()
+    {
+        Toast toast = Toast.makeText(this, "MyTweet Service Unavailable. Try again later", Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    void serviceAvailableMessage()
+    {
+        Toast toast = Toast.makeText(this, "MyTweet Contacted Successfully", Toast.LENGTH_LONG);
+        toast.show();
     }
 }
 
 class TweetAdapter extends ArrayAdapter<Tweet> {
     private Context context;
     public List<Tweet> tweets;
+    public List <User> users;
 
 
-    public TweetAdapter(Context context, List<Tweet> tweets) {
+
+    public TweetAdapter(Context context, List<Tweet> tweets, List <User> users) {
         super(context, R.layout.row_layout, tweets);
         this.context = context;
         this.tweets = tweets;
+        this.users = users;
+
     }
 
     @Override
@@ -145,7 +181,21 @@ class TweetAdapter extends ArrayAdapter<Tweet> {
                 }
             }
         });
+        TextView author = (TextView) view.findViewById(R.id.row_author);
+        for(User user:users) {
+            if (tweet.author != null) {
+                if (user._id.equals(tweet.author.toString())) {
+                    author.setText(user.firstName + " " + user.lastName);
+                }
+            }
+                else
+                    author.setText("No author found");
+        }
+
+        Log.v("Newsfeed", "your face " + tweet.author.toString() + "  " + tweet.body.toString());
+
         TextView post = (TextView) view.findViewById(R.id.row_post);
+
         TextView methodView = (TextView) view.findViewById(R.id.row_method);
         ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
         imgDelete.setTag(tweet);
@@ -168,10 +218,10 @@ class TweetAdapter extends ArrayAdapter<Tweet> {
         long elapsedTime = date2.getTime() - date;
 
 
-        if (elapsedTime <60000) {
+        if (elapsedTime <120000) {
             postAge =("Just Now");
         }
-        else if (elapsedTime >= 60000 && elapsedTime < 3600000) {
+        else if (elapsedTime >= 120000 && elapsedTime < 3600000) {
             postAge =((((date2.getTime() - date) / 60000)) + " minutes ago");
         }
         else if (elapsedTime >= 3600000 && elapsedTime < 7200000) {
@@ -190,12 +240,12 @@ class TweetAdapter extends ArrayAdapter<Tweet> {
             postAge =((((date2.getTime() - date) / 604800000)) + " weeks ago");
         }
 
-        if (tweet.tweet.length() > 31) {
-            post.setText(tweet.tweet.subSequence(0,30) + "...");
+        if (tweet.body.length() > 31) {
+            post.setText(tweet.body.subSequence(0,30) + "...");
 
         }
         else {
-            post.setText("" + tweet.tweet);
+            post.setText("" + tweet.body);
         }
         methodView.setText("" + postAge);
 
