@@ -31,11 +31,10 @@
         android:layout_marginRight="24dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/colorAccent"
+        android:onClick="signupPressed"
         android:text="@string/buttonSignin"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:onClick="signupPressed"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/buttonLogin"

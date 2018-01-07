@@ -18,6 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyTweetApp extends Application
 {
     public MyTweetService myTweetService;
+    protected static MyTweetApp app;
+
     public boolean         myTweetServiceAvailable = false;
 
     public String          service_url  = "http://10.0.2.2:4000";   // Standard Emulator IP Address
@@ -89,6 +91,9 @@ public class MyTweetApp extends Application
         return false;
     }
 
+    public MyTweetApp getApp() {
+        return app;
+    }
 
 
 }

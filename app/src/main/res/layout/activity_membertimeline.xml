@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/member"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:textAppearance="?android:attr/textAppearanceLarge" />
+
+  <Button
+      android:id="@+id/buttonFollowing"
+      android:layout_width="96dp"
+      android:layout_height="wrap_content"
+      android:layout_alignStart="@+id/member"
+      android:layout_below="@+id/member"
+      android:onClick="pipersPressed"
+      android:text="@string/buttonFollowing"
+      tools:backgroundTint="@color/colorPrimary" />
+
+  <Button
+      android:id="@+id/buttonFollowers"
+      android:layout_width="96dp"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="100dp"
+      android:layout_below="@+id/member"
+      android:text="@string/buttonFollowers"
+      android:onClick="loginPressed"
+      tools:backgroundTint="@color/colorPrimary" />
+
+  <Button
+      android:id="@+id/buttonFollow"
+      android:layout_width="96dp"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/member"
+      android:layout_marginLeft="200dp"
+      android:backgroundTint="@android:color/holo_green_dark"
+      android:onClick="followUserPressed"
+      android:text="@string/buttonFollow" />
+
+  <Button
+      android:id="@+id/buttonUnfollow"
+      android:layout_width="96dp"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/member"
+      android:layout_marginLeft="300dp"
+      android:backgroundTint="@android:color/holo_red_dark"
+      android:onClick="loginPressed"
+      android:text="@string/buttonUnfollow" />
+
+
+
+
+  <ListView
+      android:id="@+id/reportList"
+      android:layout_width="356dp"
+      android:layout_height="wrap_content"
+      android:layout_alignStart="@+id/buttonFollowing"
+      android:layout_below="@+id/buttonFollowers"
+      android:layout_alignParentEnd="true">
+
+  </ListView>
+
+</RelativeLayout>

@@ -5,7 +5,9 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Patrick on 26/09/2017.
@@ -18,6 +20,9 @@ public class User {
     public String lastName;
     public String email;
     public String password;
+    public List<User> followers;
+    public List<User> following;
+
 
     //JSON names for instance fields
     private final String JSON_FIRSTNAME   = "firstName"   ;
@@ -27,11 +32,14 @@ public class User {
 
 
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password)
+    {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        ;
+
     }
 
     //Constructor for loading JSON objects

@@ -1,10 +1,9 @@
 package app.myTweet.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,15 +20,11 @@ import android.widget.Toast;
 
 import com.example.patrick.mytweet.R;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
-//import app.myTweet.helpers.CameraHelper;
 
 import app.myTweet.main.MyTweetApp;
 import app.myTweet.model.Tweet;
@@ -40,23 +35,41 @@ import retrofit2.Response;
 
 import static app.myTweet.helpers.CameraHelper.showPhoto;
 
-public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemClickListener, Callback<List<Tweet>>{
+/**
+ * Created by Patrick on 05/01/2018.
+ */
+
+public class MemberTimeline extends AppCompatActivity implements AdapterView.OnItemClickListener, Callback<List<Tweet>> {
 
     ListView listView;
     public MyTweetApp app;
     public TweetAdapter adapter;
+    public List <User> users;
+    public TextView member;
+//    public User user;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newsfeed);
+        setContentView(R.layout.activity_membertimeline);
 
         app = (MyTweetApp) getApplication();
-        Call<List<Tweet>> call1 = (Call<List<Tweet>>) app.myTweetService.getAllTweets();
+
+        member = (TextView) findViewById(R.id.member);
+
+        String memberId = (String) getIntent().getExtras().getSerializable("USER_ID");
+        for(User user:app.users) {
+                if (user._id.equals(memberId)){
+                    member.setText(user.firstName + " " + user.lastName);
+                }
+        }
+        Call<List<Tweet>> call1 = (Call<List<Tweet>>) app.myTweetService.getUserTweets(memberId);
         call1.enqueue(this);
 
-        Log.v("Tweet", "Newsfeed Started");
+
+        Log.v("Tweet", "MemberTimeline Started");
     }
 
     @Override
@@ -90,7 +103,7 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Tweet tweet = adapter.getItem(position);
-        Log.v("Tweet", "tweet clicked" + tweet.date.toString());
+        Log.v("MemberTimeline", "tweet clicked" + tweet.date.toString());
 
         Intent intent = new Intent(this, tweetview.class);
         intent.putExtra("TWEET_ID", tweet.date);
@@ -107,7 +120,6 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
         adapter = new TweetAdapter(this, app.tweets, app.users);
 
         adapter.notifyDataSetChanged();
-        newTweetList();
 
     }
 
@@ -115,30 +127,23 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
     public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
         serviceAvailableMessage();
         app.tweets = response.body();
-        Log.v("Newsfeed", "Tweets" + app.tweets.toString());
+        Log.v("MemberTimeline", "Tweets" + app.tweets.toString());
 
         listView = (ListView) findViewById(R.id.reportList);
         adapter = new TweetAdapter(this, app.tweets, app.users);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
 
 
-        adapter.notifyDataSetChanged();
-        for (Tweet tweet:app.tweets){
-            if (tweet.img != null){
-            showPhoto(this, tweet, imageView);
 
-            }
-        }
 
         app.myTweetServiceAvailable = true;
     }
 
     @Override
     public void onFailure(Call<List<Tweet>> call, Throwable t) {
-        Log.v("Newsfeed", t.toString());
+        Log.v("MemberTimeline", t.toString());
         app.myTweetServiceAvailable = false;
         serviceUnavailableMessage();
     }
@@ -150,38 +155,71 @@ public class Newsfeed extends AppCompatActivity implements AdapterView.OnItemCli
 
     void serviceAvailableMessage()
     {
-        Toast toast = Toast.makeText(this, "MyTweet Contacted Successfully", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, "MyTweet Contacted Successfully", Toast.LENGTH_SHORT);
         toast.show();
     }
 
-    public void newTweetList(){
-        for (Tweet tweet:app.tweets){
-            //if (!(adapter.tweets.contains(tweet))){
-                Call<Tweet> call = (Call<Tweet>) app.myTweetService.deleteTweet();
-                call.enqueue(new Callback<Tweet>(){
 
-                    @Override
-                    public void onResponse(Call<Tweet> call, Response<Tweet> response) {
-                        Log.v("Newsfeed", "Tweets updated" + app.tweets.toString());
+    public void followUserPressed(View v) {
+        final String memberId = (String) getIntent().getExtras().getSerializable("USER_ID");
+        String currentUser = app.currentUser._id;
+        Call<User> call = (Call<User>) app.myTweetService.followUser(currentUser, memberId);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                serviceAvailableMessage();
+                for(User user:app.users) {
+                    if (user._id.equals(memberId)){
+                        user.followers.add(response.body());
+                    }
+                    else {
+                        Log.v("MemberTimeline", "no user found");
+
                     }
 
-                    @Override
-                    public void onFailure(Call<Tweet> call, Throwable t) {
-                        Log.v("Newsfeed", "Tweets not updated" + app.tweets.toString());
-                    }
-                });
-          //  }
-        }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                serviceUnavailableMessage();
+            }
+        });
+
     }
+
+    public void pipersPressed(View v) {
+        final String memberId = (String) getIntent().getExtras().getSerializable("USER_ID");
+
+        Call<List<User>> call = (Call<List<User>>) app.myTweetService.getUserFollowing(memberId);
+        call.enqueue(new Callback<List<User>>() {
+
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                Intent intent = new Intent(getApplicationContext(), PiperList.class);
+                intent.putExtra("USER_ID", memberId);
+
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 }
 
-class TweetAdapter extends ArrayAdapter<Tweet>{
+class TweetAdapter1 extends ArrayAdapter<Tweet> {
     private Context context;
     public List<Tweet> tweets;
     public List <User> users;
+    public MyTweetApp app;
 
 
-    public TweetAdapter(Context context, List<Tweet> tweets, List <User> users) {
+    public TweetAdapter1(Context context, List<Tweet> tweets, List <User> users) {
         super(context, R.layout.row_layout, tweets);
         this.context = context;
         this.tweets = tweets;
@@ -196,9 +234,8 @@ class TweetAdapter extends ArrayAdapter<Tweet>{
 
         View view = inflater.inflate(R.layout.row_layout, parent, false);
 
-
         final Tweet tweet = tweets.get(position);
-      //  Show newest tweet first;
+        //  Show newest tweet first;
 
         Collections.sort(tweets, new Comparator<Tweet>() {
             @Override
@@ -214,50 +251,46 @@ class TweetAdapter extends ArrayAdapter<Tweet>{
                 }
             }
         });
-        final TextView author = (TextView) view.findViewById(R.id.row_author);
+        TextView author = (TextView) view.findViewById(R.id.row_author);
         for(User user:users) {
             if (tweet.author != null) {
                 if (user._id.equals(tweet.author.toString())) {
                     author.setText(user.firstName + " " + user.lastName);
                 }
             }
-                else
-                    author.setText("No author found");
+            else
+                author.setText("No author found");
         }
 
         author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), MemberTimeline.class);
-                intent.putExtra("USER_ID", tweet.author);
+                context.startActivity(new Intent(getContext(), Welcome.class));
 
-                context.startActivity(intent);
-
-                //use context qualifier, suggested by IDE
-                Toast toast = Toast.makeText(getContext(), "View Timeline for " + author.getText(), Toast.LENGTH_SHORT);
+                //getApplicationContext() here, getContext() in the adapter
+                Toast toast = Toast.makeText(getContext(), "Tsup witcha now??", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
 
 
-        Log.v("Newsfeed", "your face " + tweet.author.toString() + "  " + tweet.body.toString());
+        Log.v("MemberTimeline", "your face " + tweet.author.toString() + "  " + tweet.body.toString());
 
         TextView post = (TextView) view.findViewById(R.id.row_post);
 
         TextView methodView = (TextView) view.findViewById(R.id.row_method);
-
-            ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
-            //ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+        //ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 //        if (tweet.img != null){
 //            showPhoto(getActivity(), tweet, imageView);
 //
 //        }
-            imgDelete.setTag(tweet);
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    tweets.remove(tweet); // remove from our list
-                    notifyDataSetChanged();
+        imgDelete.setTag(tweet);
+        imgDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tweets.remove(tweet); // remove from our list
+                notifyDataSetChanged();
 
 //                Call<Tweet> call = (Call<Tweet>) app.myTweetService.deleteTweet(tweet);
 //                call.enqueue(new Callback<Tweet>(){
@@ -272,9 +305,8 @@ class TweetAdapter extends ArrayAdapter<Tweet>{
 //                    }
 //                });
 
-                }
-            });
-
+            }
+        });
 
         String postAge = "";
 

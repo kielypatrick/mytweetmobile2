@@ -5,6 +5,10 @@
     <string name="welcomeTitle">Welcome</string>
     <string name="buttonSignin">Sign up</string>
     <string name="buttonLogin">Login</string>
+    <string name="buttonFollowers">Rats</string>
+    <string name="buttonFollowing">Pipers</string>
+    <string name="buttonFollow">Follow</string>
+    <string name="buttonUnfollow">Unfollow</string>
     <string name="Password">****</string>
     <string name="buttonRegister">Register</string>
     <string name="signupTitle">Join Today!</string>
@@ -16,8 +20,14 @@
     <string name="menuMyTweet">Tweet</string>
     <string name="menuLogout">Logout</string>
 
+
+
+    <string name="image">Photo?</string>
     <string name="contact">Select Contact</string>
     <string name="send_tweet">Send Tweet by Email</string>
+
+    <string name="take_photo">Take Photo</string>
+    <string name="save_photo">Save Photo</string>
 
     <string name="title_map">Map</string>
     <string name="google_maps_key">AIzaSyAnqqv32zrAs4jF-aJJDLopZQocIV8fkP0</string>

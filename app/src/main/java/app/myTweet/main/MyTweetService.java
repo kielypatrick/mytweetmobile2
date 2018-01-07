@@ -22,8 +22,17 @@ public interface MyTweetService
         @GET("/api/users")
         Call<List<User>> getAllUsers();
 
-        @GET("/api/users/{id}")
-        Call<User> getUser(@Path("id") String id);
+//        @GET("/api/followuser/{id}")
+//        Call<User> followUser(@Path("id") String id);
+
+        @POST("/api/followuser/{id}")
+        Call<User> followUser(@Path("id") String id, @Body String memberId);
+
+        @GET("/api/users/{id}/tweets")
+        Call<List<Tweet>> getUserTweets(@Path("id") String id);
+
+        @GET("/api/users/{id}/pipers")
+        Call<List<User>> getUserFollowing(@Path("id") String id);
 
         @POST("/api/users")
         Call<User> createUser(@Body User User);
@@ -33,6 +42,9 @@ public interface MyTweetService
 
         @POST("/api/tweets")
         Call<Tweet> createTweet(@Body Tweet tweet);
+
+        @DELETE("/api/tweets/{id}")
+        Call<Tweet> deleteTweet();
 
         @POST("/api/users/authenticate")
         Call<Token> authenticate(@Body User user);

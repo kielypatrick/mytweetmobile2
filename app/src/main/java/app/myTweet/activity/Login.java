@@ -61,13 +61,15 @@ public class Login extends AppCompatActivity implements Callback<Token> {
     @Override
     public void onResponse(Call<Token> call, Response<Token> response) {
         startActivity(new Intent(this, Newsfeed.class));
+        Toast toast = Toast.makeText(this, "Succesful Login" + app.currentUser, Toast.LENGTH_LONG);
+        toast.show();
 
     }
 
     @Override
     public void onFailure(Call<Token> call, Throwable t) {
         app.myTweetServiceAvailable = false;
-        Toast toast = Toast.makeText(this, "Donation Service Unavailable. Try again later", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, "MyTweet Service Unavailable. Try again later", Toast.LENGTH_LONG);
         toast.show();
         startActivity (new Intent(this, Welcome.class));
 

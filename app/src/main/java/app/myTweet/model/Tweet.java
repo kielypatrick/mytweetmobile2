@@ -19,6 +19,8 @@ public class Tweet {
     public Long date;
   //  public String contact;
     public String  author;
+    public String img;
+
 
     //JSON names for instance fields
     private final String JSON_TWEET   = "tweet"   ;
@@ -29,6 +31,7 @@ public class Tweet {
     {
         this.body = tweet.getText().toString();
         this.date = new Date().getTime();
+        this.img = "img";
         //this.author = author._id;
        // contact = ":none presently";
 

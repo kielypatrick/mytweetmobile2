@@ -175,6 +175,3 @@ public class tweetview extends AppCompatActivity implements View.OnClickListener
         }
     }
 }
-
-
-

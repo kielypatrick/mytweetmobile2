@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                tools:context="app.myTweet.activity.MyTweetCameraActivity" >
+
+
+  <ImageView
+      android:id="@+id/tweetImage"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_above="@+id/takePhoto"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:src="@mipmap/ic_lens" />
+
+  <Button
+      android:id="@+id/takePhoto"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignLeft="@+id/tweetImage"
+      android:layout_alignParentBottom="true"
+      android:text="@string/take_photo" />
+
+  <Button
+      android:id="@+id/savePhoto"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignBottom="@+id/takePhoto"
+      android:layout_alignRight="@+id/tweetImage"
+      android:layout_alignTop="@+id/takePhoto"
+      android:text="@string/save_photo" />
+
+</RelativeLayout>

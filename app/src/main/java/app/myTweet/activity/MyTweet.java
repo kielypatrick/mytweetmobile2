@@ -1,5 +1,6 @@
 package app.myTweet.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import com.example.patrick.mytweet.R;
 
 import java.util.Date;
 
+import static app.myTweet.helpers.CameraHelper.showPhoto;
 import static app.myTweet.helpers.IntentHelper.selectContact;
 import static app.myTweet.helpers.ContactHelper.getContact;
 import static app.myTweet.helpers.ContactHelper.getEmail;
@@ -43,10 +46,15 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
     private int          target = 140;
     private ProgressBar progressBar;
     private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO = 0;
+
     private Button contactButton;
     private Button   sendTweet;
 
     private String    emailAddress = "";
+    private ImageView cameraButton;
+    private ImageView photoView;
+    private Activity activity;
 
 
 
@@ -55,6 +63,8 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_tweet);
+
+
         tweetBody = (EditText) findViewById(R.id.newTweet);
         length = (TextView) findViewById(R.id.wordCount);
         tweetBody.addTextChangedListener(this);
@@ -65,9 +75,12 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
         contactButton.setOnClickListener(this);
         sendTweet = (Button)   findViewById(R.id.send_tweet);
         sendTweet.setOnClickListener(this);
+        cameraButton  = (ImageView) findViewById(R.id.camera_button);
+        cameraButton.setOnClickListener(this);
+
+        photoView     = (ImageView) findViewById(R.id.myrent_imageView);
 //        Date tweetId = (Date)getIntent().getExtras().getSerializable("TWEET_ID");
 //        tweet = tweetlist.getTweet(tweetId);
-
     }
 
     @Override
@@ -75,7 +88,6 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
     {
         super.onPause();
         Log.v("Tweet", "MyTweet App Tweets saved");
-
 
     }
 
@@ -113,11 +125,8 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
 
         else {
             Toast.makeText(this, "Cat got your thumb??", Toast.LENGTH_SHORT).show();
-
         }
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -179,15 +188,19 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
         switch (view.getId())
         {
 
-
             case R.id.contact : selectContact(this, REQUEST_CONTACT);
-//                Log.v("Tweet " , tweetBody.getText().toString());
-
 
                 break;
             case R.id.send_tweet :
                 sendEmail(this, emailAddress,
                 getString(R.string.send_tweet),tweetBody.getText().toString());
+
+                break;
+            case R.id.camera_button:
+                Intent ic = new Intent(this, MyTweetCameraActivity.class);
+                startActivityForResult(ic, REQUEST_PHOTO);
+//                startActivity (new Intent(this, MyTweetCameraActivity.class));
+                break;
         }
     }
 
@@ -202,7 +215,17 @@ public class MyTweet extends AppCompatActivity implements TextWatcher,View.OnCli
                 contactButton.setText(name + " : " + emailAddress);
                 Log.v("Tweet " ,name + emailAddress);
 
+                break;
 
+            case REQUEST_PHOTO:
+                String filename = data.getStringExtra(MyTweetCameraActivity.EXTRA_PHOTO_FILENAME);
+                if (filename != null)
+                {
+                    tweet = new Tweet(tweetBody);
+
+                    tweet.img = filename;
+                    showPhoto(activity, tweet, photoView );
+                }
                 break;
         }
     }
